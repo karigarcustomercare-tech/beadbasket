@@ -1,168 +1,256 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { Eye, Plus, X, Sparkles } from "lucide-react";
-import { cakes, categories, type Cake } from "@/data/cakes";
+import { ShoppingBag, X, Sparkles, SlidersHorizontal } from "lucide-react";
+import { cakesApi, categoriesApi, type Cake } from "@/lib/api";
 import { Reveal } from "./Reveal";
-import { toast } from "sonner";
+
+const WA_NUMBER = "917000096818";
+
+function orderOnWhatsApp(cake: Cake) {
+  const lines = [
+    `Hi Sweet Aroma! 🎂 I'd like to order:`,
+    ``,
+    `🍰 *${cake.name}*`,
+    `📂 Category: ${cake.category}`,
+    `💰 Price: ₹${cake.price}`,
+    cake.description ? `📝 ${cake.description}` : null,
+    cake.flavors?.length ? `🌸 Flavors available: ${cake.flavors.join(", ")}` : null,
+    cake.sizes?.length  ? `📏 Sizes available: ${cake.sizes.join(", ")}`   : null,
+    ``,
+    `Please let me know availability and delivery details. Thank you!`,
+  ]
+    .filter((l) => l !== null)
+    .join("\n");
+
+  window.open(
+    `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines)}`,
+    "_blank",
+    "noopener,noreferrer"
+  );
+}
+
+const ALL = "All";
 
 export function Catalog() {
-  const [cat, setCat] = useState<(typeof categories)[number]>("All");
-  const [sort, setSort] = useState<"featured" | "low" | "high">("featured");
-  const [loading, setLoading] = useState(true);
+  const [cat,      setCat]      = useState<string>(ALL);
+  const [sort,     setSort]     = useState<"featured" | "low" | "high">("featured");
   const [selected, setSelected] = useState<Cake | null>(null);
 
-  useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 900);
-    return () => clearTimeout(t);
-  }, []);
+  const { data: cakesData, isLoading: cakesLoading, isError: cakesError } = useQuery({
+    queryKey: ["cakes"],
+    queryFn: () => cakesApi.list(),
+    staleTime: 60_000,
+  });
+
+  const { data: catData } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => categoriesApi.list(),
+    staleTime: 60_000,
+  });
+
+  const categoryList = useMemo(() => {
+    const names = (catData?.data ?? []).map((c) => c.name);
+    return [ALL, ...names];
+  }, [catData]);
 
   const list = useMemo(() => {
-    let l = cakes.filter((c) => (cat === "All" ? true : c.category === cat));
-    if (sort === "low") l = [...l].sort((a, b) => a.price - b.price);
+    let l = (cakesData?.data ?? []).filter((c) =>
+      cat === ALL ? true : c.category === cat
+    );
+    if (sort === "low")  l = [...l].sort((a, b) => a.price - b.price);
     if (sort === "high") l = [...l].sort((a, b) => b.price - a.price);
+    if (sort === "featured") {
+      l = [...l].sort((a, b) => {
+        if (a.featured === b.featured) return 0;
+        return a.featured ? -1 : 1;
+      });
+    }
     return l;
-  }, [cat, sort]);
+  }, [cakesData, cat, sort]);
 
   return (
-    <section id="catalog" className="relative py-24">
-      <div className="mx-auto max-w-7xl px-6">
+    <section id="catalog" className="relative py-20 md:py-28 overflow-hidden">
+      <div className="pointer-events-none absolute -left-40 top-1/2 h-[500px] w-[500px] rounded-full bg-blush/20 blur-3xl" />
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+
+        {/* ── Header ───────────────────────────── */}
         <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <span className="chip">The Menu</span>
-              <h2 className="mt-3 font-display text-4xl md:text-5xl">Signature bakes, ready to order</h2>
-              <p className="mt-3 max-w-xl text-muted-foreground">
-                A curated collection of our most-loved creations. Each cake is baked fresh — allow 24 hours.
+              <h2 className="mt-3 font-display text-[clamp(2rem,5vw,3.2rem)]">
+                Signature bakes, ready to order
+              </h2>
+              <p className="mt-2 max-w-xl text-muted-foreground text-sm sm:text-base">
+                Each cake is baked fresh — allow 24 hours.
               </p>
             </div>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as typeof sort)}
-              className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium shadow-soft focus:outline-none focus:ring-2 focus:ring-rose">
-              <option value="featured">Featured</option>
-              <option value="low">Price: Low to High</option>
-              <option value="high">Price: High to Low</option>
-            </select>
+            {/* Sort — mobile-friendly select */}
+            <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium shadow-soft">
+              <SlidersHorizontal size={14} className="text-muted-foreground shrink-0" />
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as typeof sort)}
+                className="bg-transparent focus:outline-none cursor-pointer text-sm pr-1"
+              >
+                <option value="featured">Featured</option>
+                <option value="low">Price: Low → High</option>
+                <option value="high">Price: High → Low</option>
+              </select>
+            </div>
           </div>
         </Reveal>
 
-        {/* filters */}
-        <Reveal delay={0.1}>
-          <div className="mt-8 flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <button key={c}
+        {/* ── Category filters — scrollable on mobile ─── */}
+        <Reveal delay={0.08}>
+          <div className="mt-6 flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-none">
+            {categoryList.map((c) => (
+              <motion.button
+                key={c}
                 onClick={() => setCat(c)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                whileTap={{ scale: 0.94 }}
+                className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
                   cat === c
                     ? "border-transparent bg-primary text-primary-foreground shadow-soft"
                     : "border-border bg-card text-foreground/70 hover:bg-blush hover:text-foreground"
-                }`}>
+                }`}
+              >
                 {c}
-              </button>
+              </motion.button>
             ))}
           </div>
         </Reveal>
 
-        {/* grid */}
-        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {loading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="soft-card overflow-hidden">
-                  <div className="aspect-[4/5] w-full bg-muted shimmer" />
-                  <div className="p-5 space-y-3">
-                    <div className="h-4 w-2/3 rounded bg-muted shimmer" />
-                    <div className="h-3 w-full rounded bg-muted shimmer" />
-                    <div className="h-3 w-1/2 rounded bg-muted shimmer" />
-                  </div>
+        {/* ── Grid ─────────────────────────────────────── */}
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+          {cakesLoading ? (
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="soft-card overflow-hidden">
+                <div className="aspect-square w-full shimmer" />
+                <div className="p-3 sm:p-5 space-y-2">
+                  <div className="h-4 w-3/4 rounded-full shimmer" />
+                  <div className="h-3 w-1/2 rounded-full shimmer" />
+                  <div className="h-8 w-full rounded-full shimmer mt-3" />
                 </div>
-              ))
-            : (
-              <AnimatePresence mode="popLayout">
-                {list.map((c) => (
-                  <motion.article
-                    key={c.id}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4 }}
-                    className="soft-card group relative overflow-hidden">
-                    <div className="relative aspect-[4/5] overflow-hidden">
-                      <img src={c.image} alt={c.name} loading="lazy" width={900} height={900}
-                        className="h-full w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-cocoa/70 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                      <span className="chip absolute left-3 top-3 !bg-cream/90">{c.category}</span>
-                      <div className="absolute inset-x-0 bottom-0 flex translate-y-4 items-center gap-2 p-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                        <button onClick={() => setSelected(c)} className="btn-ghost !py-2 !px-4 text-xs">
-                          <Eye size={14} /> View
-                        </button>
-                        <button
-                          onClick={() => toast.success(`${c.name} added — we'll confirm on WhatsApp!`, { icon: "🎂" })}
-                          className="btn-primary !py-2 !px-4 text-xs">
-                          <Plus size={14} /> Add
-                        </button>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <h3 className="font-display text-xl">{c.name}</h3>
-                        <div className="font-display text-lg text-rose">₹{c.price}</div>
-                      </div>
-                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{c.description}</p>
-                    </div>
-                  </motion.article>
-                ))}
-              </AnimatePresence>
-            )}
+              </div>
+            ))
+          ) : cakesError ? (
+            <div className="col-span-full py-20 text-center text-muted-foreground">
+              <p>Could not load cakes. Please try again later.</p>
+            </div>
+          ) : list.length === 0 ? (
+            <div className="col-span-full py-20 text-center text-muted-foreground">
+              <p>No cakes in this category yet.</p>
+            </div>
+          ) : (
+            <AnimatePresence mode="popLayout">
+              {list.map((c, idx) => (
+                <CakeCard
+                  key={c._id}
+                  cake={c}
+                  idx={idx}
+                  onView={() => setSelected(c)}
+                  onOrder={() => orderOnWhatsApp(c)}
+                />
+              ))}
+            </AnimatePresence>
+          )}
         </div>
       </div>
 
-      {/* modal */}
+      {/* ── Detail modal ─────────────────────────────── */}
       <AnimatePresence>
         {selected && (
           <motion.div
-            className="fixed inset-0 z-[80] grid place-items-center p-4"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div className="absolute inset-0 bg-cocoa/60 backdrop-blur-sm" onClick={() => setSelected(null)} />
+            className="fixed inset-0 z-[80] grid place-items-center p-3 sm:p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="absolute inset-0 bg-cocoa/60 backdrop-blur-sm"
+              onClick={() => setSelected(null)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.93, y: 24 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-              className="relative z-10 grid w-full max-w-4xl overflow-hidden rounded-3xl bg-card shadow-lift md:grid-cols-2">
-              <img src={selected.image} alt={selected.name} className="h-64 w-full object-cover md:h-full" />
-              <div className="p-8">
-                <button onClick={() => setSelected(null)}
-                  className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-cream/90 backdrop-blur hover:bg-blush transition">
-                  <X size={16} />
+              exit={{ opacity: 0, scale: 0.93, y: 24 }}
+              transition={{ duration: 0.38, ease: [0.2, 0.8, 0.2, 1] }}
+              className="relative z-10 w-full max-w-3xl overflow-hidden rounded-3xl bg-card shadow-lift
+                         grid grid-rows-[auto_1fr] sm:grid-rows-none sm:grid-cols-2
+                         max-h-[90dvh] overflow-y-auto"
+            >
+              {/* Image */}
+              <div className="relative overflow-hidden">
+                <motion.img
+                  src={selected.image?.url}
+                  alt={selected.name}
+                  className="h-56 w-full object-cover sm:h-full"
+                  initial={{ scale: 1.08 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.6 }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-cocoa/30 to-transparent sm:bg-gradient-to-r" />
+              </div>
+
+              {/* Content */}
+              <div className="p-6 sm:p-8 flex flex-col">
+                <button
+                  onClick={() => setSelected(null)}
+                  className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-cream/90 backdrop-blur hover:bg-blush transition z-10"
+                >
+                  <X size={15} />
                 </button>
+
                 <span className="chip">{selected.category}</span>
-                <h3 className="mt-3 font-display text-3xl">{selected.name}</h3>
-                <div className="mt-1 font-display text-2xl text-rose">₹{selected.price}</div>
-                <p className="mt-4 text-muted-foreground">{selected.description}</p>
+                <h3 className="mt-3 font-display text-2xl sm:text-3xl">{selected.name}</h3>
+                <div className="mt-1 font-display text-xl sm:text-2xl text-rose">₹{selected.price}</div>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{selected.description}</p>
 
-                <div className="mt-5">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Flavors</div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {selected.flavors.map((f) => (
-                      <span key={f} className="rounded-full border border-border px-3 py-1 text-sm">{f}</span>
-                    ))}
+                {(selected.flavors?.length ?? 0) > 0 && (
+                  <div className="mt-4">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Flavors</div>
+                    <div className="flex flex-wrap gap-2">
+                      {selected.flavors.map((f) => (
+                        <span key={f} className="rounded-full border border-border px-3 py-1 text-xs sm:text-sm">
+                          {f}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="mt-4">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sizes</div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {selected.sizes.map((s) => (
-                      <span key={s} className="rounded-full border border-border px-3 py-1 text-sm">{s}</span>
-                    ))}
-                  </div>
-                </div>
+                )}
 
-                <div className="mt-8 flex gap-3">
-                  <button
-                    onClick={() => { toast.success(`${selected.name} added!`, { icon: "🎂" }); setSelected(null); }}
-                    className="btn-primary flex-1"><Plus size={16} /> Add to order</button>
-                  <a href="#customize" onClick={() => setSelected(null)} className="btn-ghost"><Sparkles size={16} /> Customize</a>
+                {(selected.sizes?.length ?? 0) > 0 && (
+                  <div className="mt-3">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Sizes</div>
+                    <div className="flex flex-wrap gap-2">
+                      {selected.sizes.map((s) => (
+                        <span key={s} className="rounded-full border border-border px-3 py-1 text-xs sm:text-sm">
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-6 flex flex-col sm:flex-row gap-2.5">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => { orderOnWhatsApp(selected); setSelected(null); }}
+                    className="btn-wa flex-1 text-sm"
+                  >
+                    <ShoppingBag size={15} /> Order on WhatsApp
+                  </motion.button>
+                  <a
+                    href="#customize"
+                    onClick={() => setSelected(null)}
+                    className="btn-ghost text-sm"
+                  >
+                    <Sparkles size={15} /> Customize
+                  </a>
                 </div>
               </div>
             </motion.div>
@@ -170,5 +258,66 @@ export function Catalog() {
         )}
       </AnimatePresence>
     </section>
+  );
+}
+
+/* ── Cake card ─────────────────────────────────────────────────── */
+function CakeCard({
+  cake: c, idx, onView, onOrder,
+}: {
+  cake: Cake; idx: number; onView: () => void; onOrder: () => void;
+}) {
+  return (
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.94 }}
+      transition={{ duration: 0.38, delay: Math.min(idx * 0.04, 0.25) }}
+      className="soft-card group overflow-hidden cursor-pointer flex flex-col"
+      onClick={onView}
+    >
+      {/* ── Image ───────────────────────────── */}
+      <div className="relative aspect-square overflow-hidden">
+        <motion.img
+          src={c.image?.url}
+          alt={c.name}
+          loading="lazy"
+          width={600}
+          height={600}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+        />
+
+        {/* Featured badge — top left */}
+        {c.featured && (
+          <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-rose px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+            <span className="h-1 w-1 rounded-full bg-white/80" />
+            Bestseller
+          </span>
+        )}
+      </div>
+
+      {/* ── Info ────────────────────────────── */}
+      <div className="flex flex-1 flex-col p-3 sm:p-4 gap-1.5">
+        {/* Name — centered, two-line clamp */}
+        <h3 className="font-display text-center text-sm sm:text-base leading-snug line-clamp-2 text-foreground">
+          {c.name}
+        </h3>
+
+        {/* Price — centered */}
+        <p className="text-center font-semibold text-sm sm:text-base text-foreground/80">
+          ₹ {c.price.toLocaleString("en-IN")}
+        </p>
+
+        {/* Order button */}
+        <motion.button
+          onClick={(e) => { e.stopPropagation(); onOrder(); }}
+          whileTap={{ scale: 0.96 }}
+          className="mt-auto w-full rounded-full border border-rose/60 bg-transparent py-2 text-xs sm:text-sm font-semibold text-rose transition-colors hover:bg-rose hover:text-white active:scale-95"
+        >
+          ORDER ONLINE
+        </motion.button>
+      </div>
+    </motion.article>
   );
 }

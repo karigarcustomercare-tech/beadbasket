@@ -65,17 +65,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sweet Aroma — Bespoke Cakes & Desserts | Khandwa, MP" },
+      { title: "Sweet Aroma — Handcrafted Cakes & Desserts | Khandwa, MP" },
       { name: "description", content: "Handcrafted custom cakes, cupcakes & desserts made with love in Khandwa. Order signature designs or customize your own." },
       { name: "author", content: "Sweet Aroma" },
-      { property: "og:title", content: "Sweet Aroma — Bespoke Cakes & Desserts" },
+      { property: "og:title", content: "Sweet Aroma — Handcrafted Cakes & Desserts" },
       { property: "og:description", content: "Handcrafted custom cakes & desserts made in Khandwa, MP." },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://res.cloudinary.com/khmp53v2/image/upload/v1783106845/sweet-aroma/gallery/ghmlfr4nmiikm8orl8gv.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://res.cloudinary.com/khmp53v2/image/upload/v1783106845/sweet-aroma/gallery/ghmlfr4nmiikm8orl8gv.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "https://res.cloudinary.com/khmp53v2/image/upload/v1783106845/sweet-aroma/gallery/ghmlfr4nmiikm8orl8gv.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "https://res.cloudinary.com/khmp53v2/image/upload/v1783106845/sweet-aroma/gallery/ghmlfr4nmiikm8orl8gv.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

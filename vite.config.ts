@@ -12,4 +12,7 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Target the Vercel preset so Nitro emits .vercel/output (Vercel Build Output API).
+  // Outside a Lovable sandbox build, this preset is fully respected.
+  nitro: { preset: "vercel" },
 });
