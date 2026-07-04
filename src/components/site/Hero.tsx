@@ -66,17 +66,12 @@ export function Hero() {
       className="relative min-h-[100dvh] flex items-center overflow-hidden pt-20 pb-12 md:pt-28 md:pb-20"
     >
       {/* ── Ambient background blobs ─────────── */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -top-40 -left-40 h-[700px] w-[700px] rounded-full bg-gradient-to-br from-blush via-petal/40 to-transparent opacity-60"
-          animate={{ scale: [1, 1.06, 1], opacity: [0.55, 0.75, 0.55] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute -bottom-32 -right-32 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-caramel/20 to-transparent"
-          animate={{ scale: [1, 1.08, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
+      {/* No blur() filter — replaced with radial-gradient to avoid mobile GPU compositing artifacts */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+        <div className="absolute -top-40 -left-40 h-[700px] w-[700px] rounded-full"
+          style={{ background: "radial-gradient(circle, oklch(0.90 0.055 12 / 0.55) 0%, transparent 70%)" }} />
+        <div className="absolute -bottom-32 -right-32 h-[500px] w-[500px] rounded-full"
+          style={{ background: "radial-gradient(circle, oklch(0.71 0.135 52 / 0.18) 0%, transparent 70%)" }} />
       </div>
 
       {/* ── Floating particles ───────────────── */}
@@ -225,11 +220,10 @@ export function Hero() {
           transition={{ delay: 0.3, duration: 1, ease: [0.2, 0.8, 0.2, 1] }}
           className="relative mx-auto w-full max-w-[300px] sm:max-w-[380px] lg:max-w-none"
         >
-          {/* Glow ring */}
-          <motion.div
-            className="absolute -inset-8 rounded-[2.8rem] bg-gradient-to-br from-blush via-cream to-caramel/30 blur-2xl"
-            animate={{ opacity: [0.45, 0.8, 0.45] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          {/* Glow ring — CSS gradient only, no blur filter (avoids mobile GPU compositing artifact) */}
+          <div
+            className="absolute -inset-8 rounded-[2.8rem]"
+            style={{ background: "radial-gradient(ellipse at center, oklch(0.90 0.055 12 / 0.55) 0%, oklch(0.987 0.010 62 / 0.3) 50%, oklch(0.71 0.135 52 / 0.15) 100%)" }}
           />
 
           {/* Image card */}

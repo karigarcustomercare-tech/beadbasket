@@ -211,8 +211,11 @@
   color: var(--cocoa);
   font-weight: 600;
   font-size: 0.9rem;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  /* backdrop-filter removed on mobile — causes GPU compositing scan-line artifact on Android/iOS */
+  @media (min-width: 768px) {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
   transition: transform 0.3s cubic-bezier(.2,.8,.2,1),
               background 0.3s, border-color 0.3s;
   -webkit-tap-highlight-color: transparent;
@@ -257,8 +260,11 @@
   border-radius: var(--radius-3xl);
   box-shadow: var(--shadow-soft);
   border: 1px solid color-mix(in oklab, var(--cocoa) 5%, transparent);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  /* backdrop-filter removed on mobile — causes GPU compositing scan-line artifact on Android/iOS */
+  @media (min-width: 768px) {
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
 }
 
 @utility glass-card {
@@ -266,8 +272,11 @@
   border-radius: var(--radius-3xl);
   box-shadow: var(--shadow-soft);
   border: 1px solid color-mix(in oklab, white 80%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  /* backdrop-filter removed on mobile — causes GPU compositing scan-line artifact on Android/iOS */
+  @media (min-width: 768px) {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
 }
 
 @utility hover-card {
@@ -460,6 +469,26 @@
     /* Smoother scrolling on iOS */
     .overflow-y-auto, .overflow-auto, section {
       -webkit-overflow-scrolling: touch;
+    }
+
+    /*
+     * MOBILE GPU FIX — disable all blur filters on mobile.
+     *
+     * backdrop-filter: blur() and filter: blur() on large elements trigger
+     * separate GPU compositing layers on Android Chrome / iOS Safari.
+     * When many blurred layers are stacked (blobs + cards + navbar) the
+     * compositor produces horizontal scan-line / static rendering artifacts.
+     *
+     * We zero-out every blur at mobile breakpoint. The visual effect is
+     * imperceptible because the blobs are already very low-opacity.
+     */
+    [class*="blur-"] {
+      filter: none !important;
+      -webkit-filter: none !important;
+    }
+    [class*="backdrop-blur"] {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
     }
   }
 }

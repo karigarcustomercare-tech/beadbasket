@@ -59,9 +59,11 @@ function AnimatedNumber({ target, suffix }: { target: number; suffix: string }) 
 export function About() {
   return (
     <section id="story" className="relative py-20 md:py-28 overflow-hidden">
-      {/* Accent blobs */}
-      <div className="pointer-events-none absolute -right-32 top-0 h-[500px] w-[500px] rounded-full bg-blush/30 blur-3xl" />
-      <div className="pointer-events-none absolute left-0 bottom-0 h-[300px] w-[300px] rounded-full bg-caramel/10 blur-3xl" />
+      {/* Accent blobs — radial-gradient only, no blur() filter (prevents mobile GPU scan-line artifact) */}
+      <div className="pointer-events-none absolute -right-32 top-0 h-[500px] w-[500px] rounded-full"
+        style={{ background: "radial-gradient(circle, oklch(0.90 0.055 12 / 0.30) 0%, transparent 70%)" }} />
+      <div className="pointer-events-none absolute left-0 bottom-0 h-[300px] w-[300px] rounded-full"
+        style={{ background: "radial-gradient(circle, oklch(0.71 0.135 52 / 0.10) 0%, transparent 70%)" }} />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
 
