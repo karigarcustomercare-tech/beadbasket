@@ -117,14 +117,14 @@ function KeyGate({ onUnlock }: { onUnlock: () => void }) {
 
 // ── Main admin page ────────────────────────────────────────────────────────
 function AdminPage() {
-  const [unlocked, setUnlocked] = useState(
-    () => typeof window !== "undefined" && sessionStorage.getItem("admin_unlocked") === "1"
-  );
+  // const [unlocked, setUnlocked] = useState(
+  //   () => typeof window !== "undefined" && sessionStorage.getItem("admin_unlocked") === "1"
+  // );
   const [active, setActive] = useState<TabId>("cakes");
 
-  if (!unlocked) {
-    return <KeyGate onUnlock={() => setUnlocked(true)} />;
-  }
+  // if (!unlocked) {
+  //   return <KeyGate onUnlock={() => setUnlocked(true)} />;
+  // }
 
   return (
     <div className="min-h-screen bg-background">
@@ -141,7 +141,8 @@ function AdminPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button
+            {/* Lock button disabled while key gate is commented out */}
+            {/* <button
               onClick={() => {
                 sessionStorage.removeItem("admin_unlocked");
                 setUnlocked(false);
@@ -149,7 +150,7 @@ function AdminPage() {
               className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
             >
               <Lock size={13} /> Lock
-            </button>
+            </button> */}
             <Link
               to="/"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
