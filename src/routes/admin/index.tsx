@@ -7,7 +7,7 @@ import { GalleryTab } from "@/components/admin/GalleryTab";
 import { CategoriesTab } from "@/components/admin/CategoriesTab";
 import { adminApi } from "@/lib/api";
 
-const LOGO = "https://res.cloudinary.com/khmp53v2/image/upload/v1783106845/sweet-aroma/gallery/ghmlfr4nmiikm8orl8gv.png";
+const LOGO = "https://res.cloudinary.com/drvug594q/image/upload/v1783199912/bb-removebg-preview_eauo8q.png";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminPage,

@@ -121,11 +121,15 @@ export function ChallengeStrip() {
   const [viewDay, setViewDay] = useState(currentDay);
   const [stripRef, setStripRef] = useState<HTMLDivElement | null>(null);
 
-  // Scroll selected pill into view
+  // Scroll selected pill into view within the strip only (avoid affecting page scroll)
   useEffect(() => {
     if (!stripRef) return;
     const pill = stripRef.querySelector(`[data-day="${viewDay}"]`) as HTMLElement | null;
-    pill?.scrollIntoView({ inline: "center", behavior: "smooth", block: "nearest" });
+    if (!pill) return;
+    const stripRect = stripRef.getBoundingClientRect();
+    const pillRect  = pill.getBoundingClientRect();
+    const offset    = pillRect.left - stripRect.left - stripRect.width / 2 + pillRect.width / 2;
+    stripRef.scrollLeft += offset;
   }, [viewDay, stripRef]);
 
   const prevDay = useCallback(() => setViewDay((d) => Math.max(d - 1, 1)), []);
