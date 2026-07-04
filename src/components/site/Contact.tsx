@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Reveal } from "./Reveal";
 import { toast } from "sonner";
 
-const WA = "https://wa.me/917000096818";
+const WA = "https://wa.me/919404856995";
 
 export function Contact() {
   const [sending, setSending] = useState(false);
@@ -14,28 +14,28 @@ export function Contact() {
     setSending(true);
     setTimeout(() => {
       setSending(false);
-      toast.success("Message sent! We'll be in touch on WhatsApp soon 💌");
+      toast.success("Message sent! Himani will be in touch on WhatsApp soon 💌");
       (e.target as HTMLFormElement).reset();
     }, 900);
   };
 
   return (
     <section id="contact" className="relative py-20 md:py-28 overflow-hidden">
-      <div className="pointer-events-none absolute -bottom-20 left-1/2 -translate-x-1/2 h-[400px] w-[700px] rounded-full bg-blush/22 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 left-1/2 -translate-x-1/2 h-[400px] w-[700px] rounded-full bg-blush/25 blur-3xl" />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal>
           <div className="text-center">
             <span className="chip">Get in Touch</span>
             <h2 className="mt-3 font-display text-[clamp(2rem,5vw,3.2rem)]">
-              Let's bake something{" "}
+              Let's create something{" "}
               <motion.span
                 className="font-script text-rose inline-block"
                 whileInView={{ scale: [0.9, 1.05, 1] }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                unforgettable
+                beautiful
               </motion.span>
             </h2>
           </div>
@@ -52,18 +52,18 @@ export function Contact() {
                 <Field label="Your name" name="name" required />
                 <Field label="Phone" name="phone" type="tel" required />
               </div>
-              <Field label="Occasion" name="occasion" placeholder="Birthday, anniversary…" />
+              <Field label="Occasion / Purpose" name="occasion" placeholder="Birthday gift, personal use, wedding…" />
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Tell us about your cake
+                  Tell us about your order
                 </label>
                 <motion.textarea
                   name="msg"
                   rows={4}
                   required
                   whileFocus={{ scale: 1.005 }}
-                  className="mt-2 w-full rounded-2xl border-[1.5px] border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose/30 focus:border-rose transition-shadow resize-none"
-                  placeholder="Flavors, size, delivery date, design ideas…"
+                  className="mt-2 w-full rounded-2xl border-[1.5px] border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose/20 focus:border-rose transition-shadow resize-none"
+                  placeholder="Colours, style, size, custom text, delivery date…"
                 />
               </div>
               <motion.button
@@ -93,19 +93,19 @@ export function Contact() {
               {[
                 {
                   icon: MapPin,
-                  title: "Visit our kitchen",
-                  copy: "Khandwa, Madhya Pradesh — pickup by appointment.",
+                  title: "Based in",
+                  copy: "Amravati / Nagpur, Maharashtra — ships pan-India.",
                 },
                 {
                   icon: Clock,
-                  title: "Business hours",
-                  copy: "Mon–Sun · 10 AM – 9 PM · 24 hr advance notice",
+                  title: "Response time",
+                  copy: "Mon–Sun · 10 AM – 9 PM · Usually replies in 2–3 hrs",
                 },
               ].map((item) => (
                 <motion.div
                   key={item.title}
                   className="soft-card p-5"
-                  whileHover={{ y: -3, boxShadow: "0 20px 50px -16px rgba(60,30,20,0.18)" }}
+                  whileHover={{ y: -3, boxShadow: "0 20px 50px -16px rgba(40,50,30,0.14)" }}
                   transition={{ type: "spring", stiffness: 300, damping: 22 }}
                 >
                   <div className="flex items-start gap-3.5">
@@ -123,7 +123,7 @@ export function Contact() {
               {/* Social quick links */}
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { icon: Instagram,     href: "https://instagram.com/.sweet_aroma.", label: "Instagram", sub: "@.sweet_aroma." },
+                  { icon: Instagram,     href: "https://instagram.com/the.bead.baskets", label: "Instagram", sub: "@the.bead.baskets" },
                   { icon: MessageCircle, href: WA, label: "WhatsApp", sub: "Fastest replies" },
                 ].map((s) => (
                   <motion.a
@@ -132,31 +132,31 @@ export function Contact() {
                     target="_blank"
                     rel="noreferrer"
                     className="soft-card flex flex-col gap-2 p-5"
-                    whileHover={{ y: -5, boxShadow: "0 24px 60px -20px rgba(60,30,20,0.22)" }}
+                    whileHover={{ y: -5, boxShadow: "0 24px 60px -20px rgba(40,50,30,0.18)" }}
                     transition={{ type: "spring", stiffness: 300, damping: 22 }}
                   >
-                    <s.icon className="text-rose" size={20} />
+                    <s.icon className="text-sage" size={20} />
                     <div className="font-semibold text-sm">{s.label}</div>
                     <div className="text-xs text-muted-foreground">{s.sub}</div>
                   </motion.a>
                 ))}
               </div>
 
-              {/* Map */}
+              {/* Map — Nagpur */}
               <div className="soft-card overflow-hidden flex-1 min-h-[160px]">
                 <iframe
-                  title="Khandwa map"
-                  src="https://www.openstreetmap.org/export/embed.html?bbox=76.30%2C21.79%2C76.42%2C21.86&layer=mapnik&marker=21.8257,76.3527"
+                  title="Nagpur map"
+                  src="https://www.openstreetmap.org/export/embed.html?bbox=78.96%2C21.08%2C79.20%2C21.22&layer=mapnik&marker=21.1458,79.0882"
                   className="h-40 w-full border-0"
                   loading="lazy"
                 />
                 <div className="flex items-center justify-between px-3 py-2.5 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <Phone size={11} /> By appointment
+                    <Phone size={11} /> DM to order
                   </span>
                   <a
-                    className="text-rose hover:underline"
-                    href="https://www.openstreetmap.org/?mlat=21.8257&mlon=76.3527#map=13/21.8257/76.3527"
+                    className="text-sage hover:underline"
+                    href="https://www.openstreetmap.org/?mlat=21.1458&mlon=79.0882#map=12/21.1458/79.0882"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -188,7 +188,7 @@ function Field({
         required={required}
         placeholder={placeholder}
         whileFocus={{ scale: 1.005 }}
-        className="mt-2 w-full rounded-2xl border-[1.5px] border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose/30 focus:border-rose transition-shadow"
+        className="mt-2 w-full rounded-2xl border-[1.5px] border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage transition-shadow"
       />
     </div>
   );

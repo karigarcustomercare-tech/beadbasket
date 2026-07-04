@@ -4,6 +4,7 @@ import { Navbar } from "@/components/site/Navbar";
 import { Hero } from "@/components/site/Hero";
 import { About } from "@/components/site/About";
 import { Catalog } from "@/components/site/Catalog";
+import { ChallengeStrip } from "@/components/site/ChallengeStrip";
 import { Customizer } from "@/components/site/Customizer";
 import { Gallery } from "@/components/site/Gallery";
 import { Testimonials } from "@/components/site/Testimonials";
@@ -25,11 +26,17 @@ function ScrollProgress() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 z-[100] h-[3px] origin-left rounded-full bg-gradient-to-r from-rose via-caramel to-rose"
+      className="fixed top-0 left-0 right-0 z-[100] h-[3px] origin-left rounded-full bg-gradient-to-r from-sage via-terra to-caramel"
       style={{ scaleX }}
     />
   );
 }
+
+const Divider = ({ color = "sage" }: { color?: "sage" | "terra" | "caramel" }) => (
+  <div className="mx-auto max-w-5xl px-6">
+    <div className={`h-px bg-gradient-to-r from-transparent via-${color}/20 to-transparent`} />
+  </div>
+);
 
 function Index() {
   return (
@@ -39,40 +46,32 @@ function Index() {
       <main>
         <Hero />
 
-        {/* Soft section separator */}
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="h-px bg-gradient-to-r from-transparent via-rose/20 to-transparent" />
-        </div>
+        <Divider color="sage" />
 
         <About />
 
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="h-px bg-gradient-to-r from-transparent via-caramel/20 to-transparent" />
-        </div>
+        <Divider color="terra" />
 
         <Catalog />
 
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="h-px bg-gradient-to-r from-transparent via-rose/20 to-transparent" />
-        </div>
+        <Divider color="sage" />
+
+        {/* 30-Day Challenge — daily product launch */}
+        <ChallengeStrip />
+
+        <Divider color="terra" />
 
         <Customizer />
 
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="h-px bg-gradient-to-r from-transparent via-caramel/20 to-transparent" />
-        </div>
+        <Divider color="sage" />
 
         <Gallery />
 
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="h-px bg-gradient-to-r from-transparent via-rose/20 to-transparent" />
-        </div>
+        <Divider color="caramel" />
 
         <Testimonials />
 
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="h-px bg-gradient-to-r from-transparent via-caramel/20 to-transparent" />
-        </div>
+        <Divider color="sage" />
 
         <Contact />
       </main>

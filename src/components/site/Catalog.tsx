@@ -1,39 +1,20 @@
 import { useMemo, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { ShoppingBag, X, Sparkles, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { ShoppingBag, X, Sparkles, SlidersHorizontal, ChevronLeft, ChevronRight, Instagram } from "lucide-react";
 import { cakesApi, categoriesApi, type Cake, type CakeImage } from "@/lib/api";
 import { Reveal } from "./Reveal";
 
-const WA_NUMBER = "917000096818";
+const INSTA = "https://instagram.com/the.bead.baskets";
 
-function orderOnWhatsApp(cake: Cake) {
-  const lines = [
-    `Hi Sweet Aroma! 🎂 I'd like to order:`,
-    ``,
-    `🍰 *${cake.name}*`,
-    `📂 Category: ${cake.category}`,
-    `💰 Price: ₹${cake.price}`,
-    cake.description ? `📝 ${cake.description}` : null,
-    cake.flavors?.length ? `🌸 Flavors available: ${cake.flavors.join(", ")}` : null,
-    cake.sizes?.length  ? `📏 Sizes available: ${cake.sizes.join(", ")}`   : null,
-    ``,
-    `Please let me know availability and delivery details. Thank you!`,
-  ]
-    .filter((l) => l !== null)
-    .join("\n");
-
-  window.open(
-    `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(lines)}`,
-    "_blank",
-    "noopener,noreferrer"
-  );
+function orderOnInstagram(item: Cake) {
+  // Open Instagram DM — deeplink on mobile, profile page on desktop
+  window.open(INSTA, "_blank", "noopener,noreferrer");
 }
 
-/** Returns the best images array from a cake */
-function getCakeImages(cake: Cake): CakeImage[] {
-  if (cake.images && cake.images.length > 0) return cake.images;
-  if (cake.image?.url) return [cake.image];
+function getItemImages(item: Cake): CakeImage[] {
+  if (item.images && item.images.length > 0) return item.images;
+  if (item.image?.url) return [item.image];
   return [];
 }
 
@@ -85,7 +66,6 @@ function CardCarousel({ images, name }: { images: CakeImage[]; name: string }) {
           >
             <ChevronRight size={14} />
           </button>
-          {/* Dot indicators */}
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
             {images.map((_, i) => (
               <button
@@ -149,8 +129,6 @@ function ModalCarousel({ images, name }: { images: CakeImage[]; name: string }) 
           >
             <ChevronRight size={16} />
           </button>
-
-          {/* Thumbnail strip */}
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
             {images.map((img, i) => (
               <button
@@ -174,7 +152,7 @@ export function Catalog() {
   const [sort,     setSort]     = useState<"featured" | "low" | "high">("featured");
   const [selected, setSelected] = useState<Cake | null>(null);
 
-  const { data: cakesData, isLoading: cakesLoading, isError: cakesError } = useQuery({
+  const { data: itemsData, isLoading: itemsLoading, isError: itemsError } = useQuery({
     queryKey: ["cakes"],
     queryFn: () => cakesApi.list(),
     staleTime: 60_000,
@@ -192,7 +170,7 @@ export function Catalog() {
   }, [catData]);
 
   const list = useMemo(() => {
-    let l = (cakesData?.data ?? []).filter((c) =>
+    let l = (itemsData?.data ?? []).filter((c) =>
       cat === ALL ? true : c.category === cat
     );
     if (sort === "low")  l = [...l].sort((a, b) => a.price - b.price);
@@ -204,7 +182,7 @@ export function Catalog() {
       });
     }
     return l;
-  }, [cakesData, cat, sort]);
+  }, [itemsData, cat, sort]);
 
   return (
     <section id="catalog" className="relative py-20 md:py-28 overflow-hidden">
@@ -216,12 +194,12 @@ export function Catalog() {
         <Reveal>
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <span className="chip">The Menu</span>
+              <span className="chip">The Collection</span>
               <h2 className="mt-3 font-display text-[clamp(2rem,5vw,3.2rem)]">
-                Signature bakes, ready to order
+                Handcrafted pieces, made to order
               </h2>
               <p className="mt-2 max-w-xl text-muted-foreground text-sm sm:text-base">
-                Each cake is baked fresh — allow 24 hours.
+                Every item is made fresh — allow 3–5 days for custom orders. 🧶
               </p>
             </div>
             {/* Sort */}
@@ -251,7 +229,7 @@ export function Catalog() {
                 className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
                   cat === c
                     ? "border-transparent bg-primary text-primary-foreground shadow-soft"
-                    : "border-border bg-card text-foreground/70 hover:bg-blush hover:text-foreground"
+                    : "border-border bg-card text-foreground/70 hover:bg-blush/40 hover:text-foreground"
                 }`}
               >
                 {c}
@@ -262,7 +240,7 @@ export function Catalog() {
 
         {/* ── Grid ─────────────────────────────────────── */}
         <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-          {cakesLoading ? (
+          {itemsLoading ? (
             Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="soft-card overflow-hidden">
                 <div className="aspect-square w-full shimmer" />
@@ -273,23 +251,23 @@ export function Catalog() {
                 </div>
               </div>
             ))
-          ) : cakesError ? (
+          ) : itemsError ? (
             <div className="col-span-full py-20 text-center text-muted-foreground">
-              <p>Could not load cakes. Please try again later.</p>
+              <p>Could not load products. Please try again later.</p>
             </div>
           ) : list.length === 0 ? (
             <div className="col-span-full py-20 text-center text-muted-foreground">
-              <p>No cakes in this category yet.</p>
+              <p>No products in this category yet — check back soon! 🧶</p>
             </div>
           ) : (
             <AnimatePresence mode="popLayout">
-              {list.map((c, idx) => (
-                <CakeCard
-                  key={c._id}
-                  cake={c}
+              {list.map((item, idx) => (
+                <ItemCard
+                  key={item._id}
+                  item={item}
                   idx={idx}
-                  onView={() => setSelected(c)}
-                  onOrder={() => orderOnWhatsApp(c)}
+                  onView={() => setSelected(item)}
+                  onOrder={() => orderOnInstagram(item)}
                 />
               ))}
             </AnimatePresence>
@@ -319,10 +297,8 @@ export function Catalog() {
                          grid grid-rows-[auto_1fr] sm:grid-rows-none sm:grid-cols-2
                          max-h-[90dvh] overflow-y-auto"
             >
-              {/* Image carousel */}
-              <ModalCarousel images={getCakeImages(selected)} name={selected.name} />
+              <ModalCarousel images={getItemImages(selected)} name={selected.name} />
 
-              {/* Content */}
               <div className="p-6 sm:p-8 flex flex-col">
                 <button
                   onClick={() => setSelected(null)}
@@ -338,7 +314,7 @@ export function Catalog() {
 
                 {(selected.flavors?.length ?? 0) > 0 && (
                   <div className="mt-4">
-                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Flavors</div>
+                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Options / Colours</div>
                     <div className="flex flex-wrap gap-2">
                       {selected.flavors.map((f) => (
                         <span key={f} className="rounded-full border border-border px-3 py-1 text-xs sm:text-sm">
@@ -366,17 +342,17 @@ export function Catalog() {
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => { orderOnWhatsApp(selected); setSelected(null); }}
-                    className="btn-wa flex-1 text-sm"
+                    onClick={() => { orderOnInstagram(selected); setSelected(null); }}
+                    className="btn-insta flex-1 text-sm"
                   >
-                    <ShoppingBag size={15} /> Order on WhatsApp
+                    <ShoppingBag size={15} /> Order on Instagram
                   </motion.button>
                   <a
                     href="#customize"
                     onClick={() => setSelected(null)}
                     className="btn-ghost text-sm"
                   >
-                    <Sparkles size={15} /> Customize
+                    <Sparkles size={15} /> Customise
                   </a>
                 </div>
               </div>
@@ -388,13 +364,13 @@ export function Catalog() {
   );
 }
 
-/* ── Cake card ─────────────────────────────────────────────────── */
-function CakeCard({
-  cake: c, idx, onView, onOrder,
+/* ── Item card ─────────────────────────────────────────────────── */
+function ItemCard({
+  item: c, idx, onView, onOrder,
 }: {
-  cake: Cake; idx: number; onView: () => void; onOrder: () => void;
+  item: Cake; idx: number; onView: () => void; onOrder: () => void;
 }) {
-  const images = getCakeImages(c);
+  const images = getItemImages(c);
 
   return (
     <motion.article
@@ -410,16 +386,15 @@ function CakeCard({
       <div className="relative aspect-square overflow-hidden">
         <CardCarousel images={images} name={c.name} />
 
-        {/* Featured badge */}
         {c.featured && (
           <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-rose px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm z-10">
             <span className="h-1 w-1 rounded-full bg-white/80" />
-            Bestseller
+            Popular
           </span>
         )}
       </div>
 
-      {/* ── Info ────────────────────────────── */}
+      {/* ── Info ────────────────────────── */}
       <div className="flex flex-1 flex-col p-3 sm:p-4 gap-1.5">
         <h3 className="font-display text-center text-sm sm:text-base leading-snug line-clamp-2 text-foreground">
           {c.name}
@@ -430,9 +405,9 @@ function CakeCard({
         <motion.button
           onClick={(e) => { e.stopPropagation(); onOrder(); }}
           whileTap={{ scale: 0.96 }}
-          className="mt-auto w-full rounded-full border border-rose/60 bg-transparent py-2 text-xs sm:text-sm font-semibold text-rose transition-colors hover:bg-rose hover:text-white active:scale-95"
+          className="mt-auto w-full rounded-full border border-rose/50 bg-transparent py-2 text-xs sm:text-sm font-semibold text-rose transition-colors hover:bg-rose hover:text-white active:scale-95"
         >
-          ORDER ONLINE
+          ORDER NOW
         </motion.button>
       </div>
     </motion.article>

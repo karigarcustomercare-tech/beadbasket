@@ -5,10 +5,9 @@ import { galleryApi } from "@/lib/api";
 import { Reveal } from "./Reveal";
 
 export function Gallery() {
-  // ── Fetch visible gallery items from backend ───────────────────────────
   const { data, isLoading, isError } = useQuery({
     queryKey: ["gallery-public"],
-    queryFn: () => galleryApi.list(false), // false = only visible items for public site
+    queryFn: () => galleryApi.list(false),
     staleTime: 60_000,
   });
 
@@ -17,53 +16,50 @@ export function Gallery() {
   return (
     <section id="gallery" className="relative py-24 overflow-hidden">
       {/* Background glow */}
-      <div className="pointer-events-none absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-caramel/15 blur-3xl" />
+      <div className="pointer-events-none absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-sage/10 blur-3xl" />
+      <div className="pointer-events-none absolute left-0 top-1/3 h-[300px] w-[300px] rounded-full bg-blush/20 blur-3xl" />
 
       <div className="mx-auto max-w-7xl px-6">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <span className="chip">The Feed</span>
-              <h2 className="mt-3 font-display text-4xl md:text-5xl">Fresh from the oven</h2>
+              <h2 className="mt-3 font-display text-4xl md:text-5xl">
+                Fresh from the{" "}
+                <span className="font-script text-terra">workshop</span>
+              </h2>
             </div>
             <motion.a
-              href="https://instagram.com/.sweet_aroma."
+              href="https://instagram.com/the.bead.baskets"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 text-sm font-semibold text-rose hover:underline"
+              className="flex items-center gap-2 text-sm font-semibold text-terra hover:underline"
               whileHover={{ x: 4 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
               <Instagram size={16} />
-              @.sweet_aroma. →
+              @the.bead.baskets →
             </motion.a>
           </div>
         </Reveal>
 
         <Reveal delay={0.1}>
           {isLoading ? (
-            // Skeleton grid
             <div className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:gap-3 lg:grid-cols-4">
               {Array.from({ length: 8 }).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="aspect-square w-full rounded-2xl bg-muted shimmer"
-                />
+                <div key={idx} className="aspect-square w-full rounded-2xl bg-muted shimmer" />
               ))}
             </div>
           ) : isError || items.length === 0 ? (
             <div className="mt-10 py-16 text-center text-muted-foreground">
               {isError
                 ? "Could not load gallery. Please try again later."
-                : "No gallery photos yet — check back soon!"}
+                : "No gallery photos yet — check back soon! 🧶"}
             </div>
           ) : (
             <motion.div
               className="mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3 md:gap-3 lg:grid-cols-4"
-              variants={{
-                hidden: {},
-                show: { transition: { staggerChildren: 0.06 } },
-              }}
+              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
               initial="hidden"
               whileInView="show"
               viewport={{ once: true }}
@@ -92,7 +88,7 @@ export function Gallery() {
 
                   {/* Overlay */}
                   <motion.div
-                    className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-cocoa/60 text-cream"
+                    className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-cocoa/65 text-cream"
                     initial={{ opacity: 0 }}
                     whileHover={{ opacity: 1 }}
                     transition={{ duration: 0.25 }}
@@ -105,6 +101,7 @@ export function Gallery() {
                         {it.caption}
                       </span>
                     )}
+                    <span className="text-lg mt-1">🧶</span>
                   </motion.div>
 
                   {/* Shimmer on hover */}
@@ -118,9 +115,24 @@ export function Gallery() {
             </motion.div>
           )}
         </Reveal>
-      </div>
 
-      {/* No lightbox */}
+        {/* Instagram CTA */}
+        <Reveal delay={0.15}>
+          <div className="mt-10 text-center">
+            <motion.a
+              href="https://instagram.com/the.bead.baskets"
+              target="_blank"
+              rel="noreferrer"
+              className="btn-ghost inline-flex"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <Instagram size={16} />
+              See all on Instagram
+            </motion.a>
+          </div>
+        </Reveal>
+      </div>
     </section>
   );
 }

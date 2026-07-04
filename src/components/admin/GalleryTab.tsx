@@ -346,7 +346,7 @@ export function GalleryTab() {
                   <input
                     value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    placeholder="e.g. Chocolate Anniversary Cake"
+                    placeholder="e.g. Crochet Jewellery"
                     className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>

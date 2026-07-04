@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
-import { Menu, X, Instagram, MessageCircle } from "lucide-react";
+import { Menu, X, Instagram, ShoppingBag } from "lucide-react";
 
-const LOGO =
-  "https://res.cloudinary.com/khmp53v2/image/upload/v1783106845/sweet-aroma/gallery/ghmlfr4nmiikm8orl8gv.png";
+const LOGO = "https://res.cloudinary.com/drvug594q/image/upload/v1783199912/bb-removebg-preview_eauo8q.png";
 
-const WA = "https://wa.me/917000096818";
+const INSTA = "https://instagram.com/the.bead.baskets";
 
 const links = [
   { href: "#home",      label: "Home" },
   { href: "#story",     label: "Story" },
-  { href: "#catalog",   label: "Cakes" },
-  { href: "#customize", label: "Custom" },
+  { href: "#catalog",   label: "Shop" },
+  { href: "#challenge", label: "30-Day 🧶" },
   { href: "#gallery",   label: "Gallery" },
   { href: "#contact",   label: "Contact" },
 ];
@@ -44,7 +43,6 @@ export function Navbar() {
     return () => obs.disconnect();
   }, []);
 
-  // Lock body scroll when mobile drawer open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -58,42 +56,36 @@ export function Navbar() {
         transition={{ duration: 0.4, ease: [0.2, 0.8, 0.2, 1] }}
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-cream/88 backdrop-blur-2xl shadow-[0_2px_20px_-8px_rgba(60,30,20,0.18)] border-b border-border/40"
+            ? "bg-cream/90 backdrop-blur-2xl shadow-[0_2px_20px_-8px_rgba(80,30,50,0.12)] border-b border-border/40"
             : "bg-transparent"
         }`}
       >
-        <div
-          className={`mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 transition-all duration-300 ${
-            scrolled ? "py-2.5" : "py-4"
-          }`}
-        >
-          {/* ── Logo ─────────────────────────────────── */}
+        <div className={`mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 transition-all duration-300 ${scrolled ? "py-2.5" : "py-4"}`}>
+
+          {/* Logo */}
           <a href="#home" className="flex items-center gap-2.5 group shrink-0">
             <motion.div
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 20 }}
-              className="relative"
             >
               <img
                 src={LOGO}
-                alt="Sweet Aroma"
-                className={`object-contain transition-all duration-300 ${
-                  scrolled ? "h-16 w-16" : "h-20 w-20"
-                }`}
+                alt="The Bead Basket"
+                className={`object-contain transition-all duration-300 ${scrolled ? "h-14 w-14" : "h-18 w-18"}`}
               />
             </motion.div>
             <div className="leading-tight hidden xs:block">
               <div className="font-display text-xl font-semibold text-foreground group-hover:text-rose transition-colors duration-200">
-                Sweet Aroma
+                The Bead Basket
               </div>
               <div className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-                Cakes & Desserts
+                Crochet & Beaded Jewellery
               </div>
             </div>
           </a>
 
-          {/* ── Desktop nav ───────────────────────────── */}
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             {links.map((l) => (
               <a
@@ -113,10 +105,10 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* ── Desktop CTAs ─────────────────────────── */}
+          {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-2">
             <motion.a
-              href="https://instagram.com/.sweet_aroma."
+              href={INSTA}
               target="_blank"
               rel="noreferrer"
               whileHover={{ scale: 1.1, backgroundColor: "var(--blush)" }}
@@ -127,19 +119,19 @@ export function Navbar() {
               <Instagram size={15} />
             </motion.a>
             <motion.a
-              href={WA}
+              href={INSTA}
               target="_blank"
               rel="noreferrer"
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-1.5 rounded-full bg-rose px-4 py-2 text-sm font-semibold text-white shadow-[var(--shadow-rose)] hover:shadow-lift transition-shadow"
+              className="btn-insta !py-2 !px-4 !text-sm"
             >
-              <MessageCircle size={14} />
+              <ShoppingBag size={14} />
               Order Now
             </motion.a>
           </div>
 
-          {/* ── Mobile burger ────────────────────────── */}
+          {/* Mobile burger */}
           <motion.button
             whileTap={{ scale: 0.88 }}
             onClick={() => setOpen((v) => !v)}
@@ -166,35 +158,30 @@ export function Navbar() {
         </div>
       </motion.header>
 
-      {/* ── Mobile full-screen drawer ─────────────── */}
+      {/* Mobile drawer */}
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop */}
             <motion.div
               key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               className="fixed inset-0 z-40 bg-cocoa/40 backdrop-blur-sm md:hidden"
               onClick={() => setOpen(false)}
             />
-
-            {/* Drawer panel */}
             <motion.div
               key="drawer"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
+              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 320, damping: 32 }}
               className="fixed inset-y-0 right-0 z-50 w-72 max-w-[85vw] bg-cream/97 backdrop-blur-2xl shadow-lift flex flex-col md:hidden border-l border-border/30"
             >
-              {/* Drawer header */}
               <div className="flex items-center justify-between p-5 border-b border-border/40">
                 <div className="flex items-center gap-2.5">
-                  <img src={LOGO} alt="Sweet Aroma" className="h-16 w-16 object-contain" />
-                  <span className="font-display text-lg font-semibold">Sweet Aroma</span>
+                  <img src={LOGO} alt="The Bead Basket" className="h-14 w-14 object-contain" />
+                  <div>
+                    <span className="font-display text-base font-semibold block">The Bead Basket</span>
+                    <span className="text-[9px] uppercase tracking-widest text-muted-foreground">by Himani</span>
+                  </div>
                 </div>
                 <motion.button
                   whileTap={{ scale: 0.88, rotate: 90 }}
@@ -205,17 +192,14 @@ export function Navbar() {
                 </motion.button>
               </div>
 
-              {/* Nav links */}
               <nav className="flex-1 overflow-y-auto p-4">
                 <motion.ul
-                  initial="hidden"
-                  animate="show"
+                  initial="hidden" animate="show"
                   variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } } }}
                   className="space-y-1"
                 >
                   {links.map((l) => (
-                    <motion.li
-                      key={l.href}
+                    <motion.li key={l.href}
                       variants={{ hidden: { opacity: 0, x: 20 }, show: { opacity: 1, x: 0, transition: { duration: 0.28 } } }}
                     >
                       <a
@@ -228,10 +212,7 @@ export function Navbar() {
                         }`}
                       >
                         {active === l.href && (
-                          <motion.span
-                            layoutId="active-dot"
-                            className="h-1.5 w-1.5 rounded-full bg-rose"
-                          />
+                          <motion.span layoutId="active-dot" className="h-1.5 w-1.5 rounded-full bg-rose" />
                         )}
                         {l.label}
                       </a>
@@ -240,21 +221,20 @@ export function Navbar() {
                 </motion.ul>
               </nav>
 
-              {/* Drawer footer CTAs */}
               <div className="p-4 border-t border-border/40 space-y-2.5">
                 <motion.a
-                  href={WA}
+                  href={INSTA}
                   target="_blank"
                   rel="noreferrer"
                   onClick={() => setOpen(false)}
                   whileTap={{ scale: 0.96 }}
-                  className="btn-wa w-full text-sm"
+                  className="btn-insta w-full text-sm"
                 >
-                  <MessageCircle size={16} />
-                  Chat on WhatsApp
+                  <ShoppingBag size={16} />
+                  Order on Instagram
                 </motion.a>
                 <motion.a
-                  href="https://instagram.com/.sweet_aroma."
+                  href={INSTA}
                   target="_blank"
                   rel="noreferrer"
                   onClick={() => setOpen(false)}
@@ -262,7 +242,7 @@ export function Navbar() {
                   className="btn-ghost w-full text-sm"
                 >
                   <Instagram size={16} />
-                  Follow on Instagram
+                  Follow @the.bead.baskets
                 </motion.a>
               </div>
             </motion.div>

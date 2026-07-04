@@ -1,40 +1,40 @@
 import { useEffect, useRef } from "react";
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
-import { MapPin, Heart, Award, Leaf, ChefHat, Sparkles } from "lucide-react";
+import { MapPin, Heart, Award, Sparkles, Gem, Package } from "lucide-react";
 import { Reveal, RevealStagger, RevealItem } from "./Reveal";
 
 const features = [
   {
     icon: Heart,
     title: "Handcrafted",
-    copy: "Every layer piped and finished by hand with care.",
+    copy: "Every stitch and bead placed by hand with love and care.",
     color: "bg-rose/10 text-rose",
   },
   {
-    icon: Leaf,
-    title: "Fresh Daily",
-    copy: "Baked on the morning of your event — never day-old.",
-    color: "bg-blush text-rose",
+    icon: Gem,
+    title: "Premium Beads",
+    copy: "Curated quality beads sourced for every design.",
+    color: "bg-blush text-terra",
   },
   {
     icon: Award,
-    title: "Custom Design",
-    copy: "Bring your reference — we'll bring it to life.",
+    title: "Custom Designs",
+    copy: "Bring your vision — we'll create it just for you.",
     color: "bg-gold/15 text-caramel",
   },
   {
-    icon: MapPin,
-    title: "Local Delivery",
-    copy: "Doorstep delivery across Khandwa city.",
-    color: "bg-blue-50 text-blue-500",
+    icon: Package,
+    title: "Gift-Ready",
+    copy: "Beautifully packaged and delivered across India.",
+    color: "bg-dusty/15 text-dusty",
   },
 ];
 
 const stats = [
-  { value: 500, suffix: "+", label: "Happy customers" },
+  { value: 250, suffix: "+", label: "Happy customers" },
   { value: 4,   suffix: ".9★", label: "Average rating" },
-  { value: 3,   suffix: "+",   label: "Years of baking" },
-  { value: 100, suffix: "%",   label: "Eggless available" },
+  { value: 164, suffix: "+",  label: "Posts & drops" },
+  { value: 431, suffix: "",   label: "Instagram followers" },
 ];
 
 function AnimatedNumber({ target, suffix }: { target: number; suffix: string }) {
@@ -59,11 +59,11 @@ function AnimatedNumber({ target, suffix }: { target: number; suffix: string }) 
 export function About() {
   return (
     <section id="story" className="relative py-20 md:py-28 overflow-hidden">
-      {/* Accent blobs — radial-gradient only, no blur() filter (prevents mobile GPU scan-line artifact) */}
+      {/* Accent blobs */}
       <div className="pointer-events-none absolute -right-32 top-0 h-[500px] w-[500px] rounded-full"
-        style={{ background: "radial-gradient(circle, oklch(0.90 0.055 12 / 0.30) 0%, transparent 70%)" }} />
+        style={{ background: "radial-gradient(circle, oklch(0.60 0.10 148 / 0.14) 0%, transparent 70%)" }} />
       <div className="pointer-events-none absolute left-0 bottom-0 h-[300px] w-[300px] rounded-full"
-        style={{ background: "radial-gradient(circle, oklch(0.71 0.135 52 / 0.10) 0%, transparent 70%)" }} />
+        style={{ background: "radial-gradient(circle, oklch(0.92 0.04 18 / 0.28) 0%, transparent 70%)" }} />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
 
@@ -92,43 +92,44 @@ export function About() {
             <div>
               <span className="chip">Our Story</span>
               <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.2rem)] leading-tight">
-                A tiny kitchen.{" "}
+                A passion for craft.{" "}
                 <br />
-                A big obsession with{" "}
+                A love for{" "}
                 <motion.span
                   className="font-script text-rose inline-block"
                   whileInView={{ scale: [0.9, 1.06, 1] }}
                   transition={{ duration: 0.8 }}
                   viewport={{ once: true }}
                 >
-                  flavour
+                  handmade
                 </motion.span>
                 .
               </h2>
               <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Sweet Aroma began as a weekend hobby and grew into a beloved home bakery in
-                Khandwa. Every cake is baked-to-order, hand-decorated, and made with fresh,
-                local ingredients — the same way we'd bake for our own family.
+                Hi, I'm <strong>Himani Goenka</strong>! I started The Bead Basket out of a love for crochet
+                and beaded jewellery. Every piece I make is completely handcrafted — from bags and
+                accessories to jewellery that adds gems to your everyday life. With 250+ happy
+                orders and counting, I'm grateful for every single one. 🧶✨
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <motion.span
                   className="chip"
-                  animate={{ boxShadow: ["0 0 0 0 rgba(203,94,111,0)", "0 0 0 8px rgba(203,94,111,0.18)", "0 0 0 0 rgba(203,94,111,0)"] }}
+                  animate={{ boxShadow: ["0 0 0 0 rgba(96,160,100,0)", "0 0 0 8px rgba(96,160,100,0.18)", "0 0 0 0 rgba(96,160,100,0)"] }}
                   transition={{ duration: 2.5, repeat: Infinity }}
                 >
-                  🎂 Currently Accepting Orders
+                  🧶 Currently Accepting Orders
                 </motion.span>
                 <span className="chip">
-                  <MapPin size={11} /> Khandwa, MP
+                  <MapPin size={11} /> Amravati / Nagpur
                 </span>
               </div>
 
               {/* Mini highlight row */}
               <div className="mt-8 flex flex-wrap gap-3">
                 {[
-                  { icon: ChefHat, text: "Home-baked" },
+                  { icon: Heart,    text: "Made with love" },
                   { icon: Sparkles, text: "Custom designs" },
-                  { icon: Leaf,     text: "Fresh ingredients" },
+                  { icon: Gem,      text: "Premium materials" },
                 ].map(({ icon: Icon, text }) => (
                   <div
                     key={text}
@@ -139,6 +140,18 @@ export function About() {
                   </div>
                 ))}
               </div>
+
+              {/* Instagram CTA */}
+              <motion.a
+                href="https://instagram.com/the.bead.baskets"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-rose hover:text-foreground transition-colors"
+                whileHover={{ x: 4 }}
+              >
+                <span className="text-base">📸</span>
+                Follow @the.bead.baskets for daily drops →
+              </motion.a>
             </div>
           </Reveal>
 
@@ -148,7 +161,7 @@ export function About() {
               <RevealItem key={f.title}>
                 <motion.div
                   className="soft-card p-5 h-full cursor-default"
-                  whileHover={{ y: -6, boxShadow: "0 24px 60px -20px rgba(60,30,20,0.22)" }}
+                  whileHover={{ y: -6, boxShadow: "0 24px 60px -20px rgba(40,50,30,0.18)" }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 >
                   <motion.div

@@ -108,7 +108,7 @@ export function CategoriesTab() {
       ) : categories.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
           <p className="text-lg font-display">No categories yet</p>
-          <p className="text-sm mt-1">Add your first cake category.</p>
+          <p className="text-sm mt-1">Add your first product category (e.g. Crochet Bags, Beaded Jewellery).</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -180,7 +180,7 @@ export function CategoriesTab() {
             >
               <p className="font-display text-xl">Delete this category?</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Existing cakes in this category will keep the value but it won't appear in filters.
+                Existing products in this category will keep the value but it won't appear in filters.
               </p>
               <div className="flex gap-3 mt-5">
                 <button

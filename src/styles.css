@@ -5,7 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ═══════════════════════════════════════════════════════════════
-   Sweet Aromas — Premium Artisanal Bakery Design System
+   The Bead Basket — Premium Crochet & Beaded Jewellery Design System
+   Palette: Warm Ivory · Dusty Rose · Mauve · Blush · Gold Caramel
    ═══════════════════════════════════════════════════════════════ */
 
 @theme inline {
@@ -43,59 +44,65 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
 
+  /* Brand palette tokens */
   --color-blush: var(--blush);
   --color-blush-soft: var(--blush-soft);
   --color-cream: var(--cream);
   --color-caramel: var(--caramel);
   --color-cocoa: var(--cocoa);
   --color-rose: var(--rose);
+  --color-mauve: var(--mauve);
   --color-gold: var(--gold);
   --color-petal: var(--petal);
+  --color-dusty: var(--dusty);
 
-  /* Premium shadow system */
+  /* Shadow system — all rose/mauve tinted */
   --shadow-xs:   0 2px 8px -2px  color-mix(in oklab, var(--cocoa) 10%, transparent);
-  --shadow-soft: 0 8px 28px -8px  color-mix(in oklab, var(--cocoa) 16%, transparent);
-  --shadow-lift: 0 20px 50px -16px color-mix(in oklab, var(--cocoa) 28%, transparent);
-  --shadow-glow: 0 0 0 6px       color-mix(in oklab, var(--blush) 40%, transparent);
-  --shadow-rose: 0 8px 32px -8px  color-mix(in oklab, var(--rose) 35%, transparent);
-  --shadow-gold: 0 8px 32px -8px  color-mix(in oklab, var(--gold) 30%, transparent);
+  --shadow-soft: 0 8px 28px -8px  color-mix(in oklab, var(--mauve) 18%, transparent);
+  --shadow-lift: 0 20px 50px -16px color-mix(in oklab, var(--mauve) 28%, transparent);
+  --shadow-glow: 0 0 0 6px       color-mix(in oklab, var(--blush) 45%, transparent);
+  --shadow-rose: 0 8px 32px -8px  color-mix(in oklab, var(--rose) 32%, transparent);
+  --shadow-gold: 0 8px 32px -8px  color-mix(in oklab, var(--gold) 28%, transparent);
+  --shadow-mauve:0 8px 32px -8px  color-mix(in oklab, var(--mauve) 30%, transparent);
 }
 
 :root {
   --radius: 1rem;
 
-  /* Base palette */
-  --background: oklch(0.987 0.010 62);
-  --foreground: oklch(0.22 0.045 28);
+  /* ── Base ── */
+  --background: oklch(0.988 0.007 55);         /* warm ivory white */
+  --foreground: oklch(0.22 0.04 340);          /* deep plum-brown */
 
-  --card: oklch(1 0 0 / 92%);
-  --card-foreground: oklch(0.22 0.045 28);
+  --card: oklch(1 0 0 / 93%);
+  --card-foreground: oklch(0.22 0.04 340);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.045 28);
+  --popover-foreground: oklch(0.22 0.04 340);
 
-  --primary: oklch(0.40 0.10 22);
-  --primary-foreground: oklch(0.987 0.010 62);
-  --secondary: oklch(0.93 0.04 22);
-  --secondary-foreground: oklch(0.30 0.07 22);
-  --muted: oklch(0.96 0.018 58);
-  --muted-foreground: oklch(0.52 0.028 30);
-  --accent: oklch(0.80 0.13 42);
-  --accent-foreground: oklch(0.22 0.045 28);
-  --destructive: oklch(0.58 0.23 22);
+  --primary: oklch(0.52 0.13 0);              /* rich dusty rose — main CTA */
+  --primary-foreground: oklch(0.988 0.007 55);
+  --secondary: oklch(0.94 0.03 0);
+  --secondary-foreground: oklch(0.35 0.08 0);
+  --muted: oklch(0.965 0.010 50);
+  --muted-foreground: oklch(0.53 0.025 350);
+  --accent: oklch(0.74 0.09 50);              /* warm honey gold */
+  --accent-foreground: oklch(0.22 0.04 340);
+  --destructive: oklch(0.58 0.22 22);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.91 0.018 42);
-  --input: oklch(0.91 0.018 42);
-  --ring: oklch(0.72 0.10 22);
+  --border: oklch(0.92 0.012 350);
+  --input: oklch(0.92 0.012 350);
+  --ring: oklch(0.65 0.12 0);
 
-  /* Brand palette */
-  --blush:      oklch(0.90 0.055 12);
-  --blush-soft: oklch(0.96 0.025 12);
-  --cream:      oklch(0.987 0.010 62);
-  --caramel:    oklch(0.71 0.135 52);
-  --cocoa:      oklch(0.28 0.065 24);
-  --rose:       oklch(0.62 0.175 12);
-  --gold:       oklch(0.80 0.14 82);
-  --petal:      oklch(0.93 0.045 350);
+  /* ── Brand palette ── */
+  --blush:      oklch(0.93 0.038 10);         /* soft blush pink */
+  --blush-soft: oklch(0.96 0.018 10);         /* lightest blush */
+  --cream:      oklch(0.988 0.007 55);        /* warm ivory */
+  --caramel:    oklch(0.72 0.10 55);          /* warm honey caramel */
+  --cocoa:      oklch(0.26 0.050 340);        /* deep plum-brown */
+  --rose:       oklch(0.55 0.15 0);           /* dusty rose — accents */
+  --mauve:      oklch(0.60 0.12 340);         /* soft mauve-pink */
+  --gold:       oklch(0.80 0.12 76);          /* warm gold */
+  --petal:      oklch(0.94 0.042 355);        /* palest petal */
+  --dusty:      oklch(0.75 0.09 345);         /* muted dusty pink */
 }
 
 /* ── Base layer ─────────────────────────────────────────────────── */
@@ -114,21 +121,17 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Subtle ambient background gradients */
+    /* Soft ambient blush-rose background */
     background-image:
       radial-gradient(ellipse 110% 70% at 0% -10%,
         color-mix(in oklab, var(--blush) 55%, transparent), transparent 60%),
       radial-gradient(ellipse 80% 60% at 110% 0%,
-        color-mix(in oklab, var(--caramel) 22%, transparent), transparent 55%),
+        color-mix(in oklab, var(--petal) 45%, transparent), transparent 55%),
       radial-gradient(ellipse 70% 50% at 50% 110%,
-        color-mix(in oklab, var(--petal) 40%, transparent), transparent 60%);
-    /* background-attachment: fixed is intentionally removed —
-       it causes a rendering glitch (horizontal lines / static) on iOS Safari
-       and Android Chrome where fixed backgrounds are composited incorrectly. */
+        color-mix(in oklab, var(--caramel) 15%, transparent), transparent 60%);
     overflow-x: hidden;
   }
 
-  /* Respect prefers-reduced-motion globally */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
@@ -148,23 +151,21 @@
     color: var(--cocoa);
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--caramel) 50%, transparent);
+    background: color-mix(in oklab, var(--mauve) 45%, transparent);
     border-radius: 99px;
   }
 
-  /* Focus ring */
   :focus-visible {
     outline: 2px solid var(--rose);
     outline-offset: 2px;
   }
 }
 
-/* ── Font utility ───────────────────────────────────────────────── */
-@utility font-script { font-family: var(--font-script); }
+/* ── Font utilities ─────────────────────────────────────────────── */
+@utility font-script  { font-family: var(--font-script); }
 @utility font-display { font-family: var(--font-display); }
 
 /* ── Button system ──────────────────────────────────────────────── */
@@ -177,16 +178,15 @@
   border-radius: 999px;
   background: linear-gradient(
     135deg,
-    var(--cocoa) 0%,
-    color-mix(in oklab, var(--cocoa) 75%, var(--caramel)) 100%
+    var(--rose) 0%,
+    color-mix(in oklab, var(--mauve) 80%, var(--rose)) 100%
   );
-  color: var(--cream);
+  color: white;
   font-weight: 600;
   font-size: 0.9rem;
   letter-spacing: 0.025em;
-  box-shadow: var(--shadow-soft), inset 0 1px 0 color-mix(in oklab, white 12%, transparent);
-  transition: transform 0.3s cubic-bezier(.2,.8,.2,1),
-              box-shadow 0.3s cubic-bezier(.2,.8,.2,1);
+  box-shadow: var(--shadow-rose), inset 0 1px 0 color-mix(in oklab, white 14%, transparent);
+  transition: transform 0.3s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s cubic-bezier(.2,.8,.2,1);
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
@@ -207,17 +207,15 @@
   padding: 0.8rem 1.75rem;
   border-radius: 999px;
   background: color-mix(in oklab, var(--cream) 85%, transparent);
-  border: 1.5px solid color-mix(in oklab, var(--cocoa) 18%, transparent);
+  border: 1.5px solid color-mix(in oklab, var(--mauve) 25%, transparent);
   color: var(--cocoa);
   font-weight: 600;
   font-size: 0.9rem;
-  /* backdrop-filter removed on mobile — causes GPU compositing scan-line artifact on Android/iOS */
   @media (min-width: 768px) {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
   }
-  transition: transform 0.3s cubic-bezier(.2,.8,.2,1),
-              background 0.3s, border-color 0.3s;
+  transition: transform 0.3s cubic-bezier(.2,.8,.2,1), background 0.3s, border-color 0.3s;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   cursor: pointer;
@@ -225,11 +223,37 @@
   &:hover {
     transform: translateY(-2px) scale(1.02);
     background: var(--blush);
-    border-color: color-mix(in oklab, var(--rose) 30%, transparent);
+    border-color: color-mix(in oklab, var(--rose) 35%, transparent);
   }
   &:active { transform: scale(0.97); }
 }
 
+/* ── Instagram order button — brand gradient ─────────────────── */
+@utility btn-insta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.75rem;
+  border-radius: 999px;
+  background: #C1694F;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 32px -8px rgba(193,105,79,0.45);
+  transition: transform 0.3s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 20px 50px -16px rgba(193,105,79,0.55);
+    background: #B25A42;
+  }
+  &:active { transform: scale(0.97); }
+}
+/* Keep btn-wa as a soft mauve variant (still shown in footer CTA bar on mobile) */
 @utility btn-wa {
   display: inline-flex;
   align-items: center;
@@ -237,7 +261,7 @@
   gap: 0.5rem;
   padding: 0.8rem 1.75rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--rose), color-mix(in oklab, var(--rose) 75%, var(--caramel)));
+  background: linear-gradient(135deg, var(--rose), var(--mauve));
   color: white;
   font-weight: 600;
   font-size: 0.9rem;
@@ -259,8 +283,7 @@
   background: var(--card);
   border-radius: var(--radius-3xl);
   box-shadow: var(--shadow-soft);
-  border: 1px solid color-mix(in oklab, var(--cocoa) 5%, transparent);
-  /* backdrop-filter removed on mobile — causes GPU compositing scan-line artifact on Android/iOS */
+  border: 1px solid color-mix(in oklab, var(--mauve) 6%, transparent);
   @media (min-width: 768px) {
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
@@ -272,7 +295,6 @@
   border-radius: var(--radius-3xl);
   box-shadow: var(--shadow-soft);
   border: 1px solid color-mix(in oklab, white 80%, transparent);
-  /* backdrop-filter removed on mobile — causes GPU compositing scan-line artifact on Android/iOS */
   @media (min-width: 768px) {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -280,8 +302,7 @@
 }
 
 @utility hover-card {
-  transition: transform 0.4s cubic-bezier(.2,.8,.2,1),
-              box-shadow 0.4s cubic-bezier(.2,.8,.2,1);
+  transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s cubic-bezier(.2,.8,.2,1);
   will-change: transform;
   &:hover {
     transform: translateY(-6px);
@@ -296,13 +317,13 @@
   gap: 0.4rem;
   padding: 0.3rem 0.85rem;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--blush) 65%, var(--cream));
+  background: color-mix(in oklab, var(--blush) 70%, var(--cream));
   color: var(--cocoa);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border: 1px solid color-mix(in oklab, var(--rose) 15%, transparent);
+  border: 1px solid color-mix(in oklab, var(--rose) 18%, transparent);
 }
 
 /* ── Text utilities ─────────────────────────────────────────────── */
@@ -320,7 +341,14 @@
   background-clip: text;
 }
 
-/* ── Loading / skeleton shimmer ─────────────────────────────────── */
+@utility text-gradient-mauve {
+  background: linear-gradient(135deg, var(--mauve) 0%, var(--rose) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Shimmer skeleton ───────────────────────────────────────────── */
 @utility shimmer {
   position: relative;
   overflow: hidden;
@@ -339,34 +367,26 @@
   }
 }
 
-/* ── Animated decorative line ───────────────────────────────────── */
+/* ── Decorative lines ───────────────────────────────────────────── */
 @utility divider-rose {
   height: 1px;
-  background: linear-gradient(
-    90deg, transparent, color-mix(in oklab, var(--rose) 30%, transparent), transparent
-  );
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--rose) 28%, transparent), transparent);
 }
 
-/* ── Section pattern ────────────────────────────────────────────── */
 @utility section-divider {
   position: relative;
   &::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: radial-gradient(
-      ellipse 80% 1px at 50% 0,
-      color-mix(in oklab, var(--rose) 22%, transparent),
-      transparent
-    );
+    background: radial-gradient(ellipse 80% 1px at 50% 0, color-mix(in oklab, var(--rose) 20%, transparent), transparent);
     pointer-events: none;
   }
 }
 
-/* ── Marquee animation ──────────────────────────────────────────── */
+/* ── Marquee ────────────────────────────────────────────────────── */
 @utility animate-marquee-left {
   animation: marquee-left 40s linear infinite;
-  /* GPU-only animation */
   will-change: transform;
   transform: translateZ(0);
 }
@@ -389,9 +409,9 @@
 }
 
 @keyframes pulse-ring {
-  0%   { box-shadow: 0 0 0 0   color-mix(in oklab, var(--rose) 55%, transparent); }
+  0%   { box-shadow: 0 0 0 0    color-mix(in oklab, var(--rose) 55%, transparent); }
   70%  { box-shadow: 0 0 0 14px color-mix(in oklab, var(--rose) 0%,  transparent); }
-  100% { box-shadow: 0 0 0 0   transparent; }
+  100% { box-shadow: 0 0 0 0    transparent; }
 }
 
 @keyframes marquee-left {
@@ -425,6 +445,11 @@
   50%       { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
 }
 
+@keyframes challenge-glow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--rose) 35%, transparent); }
+  50%       { box-shadow: 0 0 20px 6px color-mix(in oklab, var(--rose) 22%, transparent); }
+}
+
 /* ── Animation utilities ────────────────────────────────────────── */
 @utility animate-float      { animation: float-y 6s ease-in-out infinite; will-change: transform; }
 @utility animate-pulse-ring { animation: pulse-ring 2.2s ease-out infinite; }
@@ -456,32 +481,15 @@
 
 /* ── Mobile touch improvements ──────────────────────────────────── */
 @layer base {
-  /* Minimum 44px tap targets on mobile */
   @media (max-width: 768px) {
     button, a, [role="button"] {
       min-height: 44px;
       -webkit-tap-highlight-color: transparent;
     }
-
-    /* Prevent text inflation on mobile */
     body { -webkit-text-size-adjust: none; }
-
-    /* Smoother scrolling on iOS */
     .overflow-y-auto, .overflow-auto, section {
       -webkit-overflow-scrolling: touch;
     }
-
-    /*
-     * MOBILE GPU FIX — disable all blur filters on mobile.
-     *
-     * backdrop-filter: blur() and filter: blur() on large elements trigger
-     * separate GPU compositing layers on Android Chrome / iOS Safari.
-     * When many blurred layers are stacked (blobs + cards + navbar) the
-     * compositor produces horizontal scan-line / static rendering artifacts.
-     *
-     * We zero-out every blur at mobile breakpoint. The visual effect is
-     * imperceptible because the blobs are already very low-opacity.
-     */
     [class*="blur-"] {
       filter: none !important;
       -webkit-filter: none !important;
@@ -495,16 +503,17 @@
 
 /* ── Dark mode ──────────────────────────────────────────────────── */
 .dark {
-  --background: oklch(0.16 0.022 28);
-  --foreground: oklch(0.96 0.015 60);
-  --card: oklch(0.20 0.028 28 / 92%);
-  --card-foreground: oklch(0.96 0.015 60);
-  --muted: oklch(0.25 0.02 30);
-  --muted-foreground: oklch(0.65 0.02 40);
-  --primary: oklch(0.88 0.06 12);
-  --primary-foreground: oklch(0.20 0.028 28);
+  --background: oklch(0.15 0.020 340);
+  --foreground: oklch(0.96 0.012 55);
+  --card: oklch(0.19 0.022 340 / 92%);
+  --card-foreground: oklch(0.96 0.012 55);
+  --muted: oklch(0.24 0.018 340);
+  --muted-foreground: oklch(0.65 0.018 350);
+  --primary: oklch(0.75 0.14 0);
+  --primary-foreground: oklch(0.15 0.020 340);
   --border: oklch(1 0 0 / 9%);
   --input: oklch(1 0 0 / 12%);
-  --blush: oklch(0.35 0.055 12);
-  --blush-soft: oklch(0.28 0.035 12);
+  --blush: oklch(0.35 0.055 10);
+  --blush-soft: oklch(0.28 0.035 10);
+  --mauve: oklch(0.55 0.11 340);
 }
