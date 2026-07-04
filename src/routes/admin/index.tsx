@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Cake, Image, Tag, LayoutDashboard } from "lucide-react";
+import { Cake, Image, Tag, LayoutDashboard, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { CakesTab } from "@/components/admin/CakesTab";
 import { GalleryTab } from "@/components/admin/GalleryTab";
 import { CategoriesTab } from "@/components/admin/CategoriesTab";
+import { adminApi } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminPage,
@@ -18,8 +19,109 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
+// ── Key gate ──────────────────────────────────────────────────────────────
+function KeyGate({ onUnlock }: { onUnlock: () => void }) {
+  const [key, setKey]       = useState("");
+  const [show, setShow]     = useState(false);
+  const [error, setError]   = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!key.trim()) return;
+    setLoading(true);
+    setError("");
+    try {
+      const res = await adminApi.verify(key.trim());
+      if (res.success) {
+        // Store in sessionStorage so a page refresh re-prompts
+        sessionStorage.setItem("admin_unlocked", "1");
+        onUnlock();
+      } else {
+        setError("Invalid key. Please try again.");
+      }
+    } catch {
+      setError("Invalid key. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.2, 0.8, 0.2, 1] }}
+        className="soft-card w-full max-w-sm p-8 text-center"
+      >
+        {/* Icon */}
+        <div className="mx-auto mb-5 h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <Lock size={28} className="text-primary" />
+        </div>
+
+        <h1 className="font-display text-2xl">Admin Access</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          Enter the admin key to continue.
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4 text-left">
+          <div>
+            <label className="block text-sm font-semibold mb-1.5">Admin Key</label>
+            <div className="relative">
+              <input
+                type={show ? "text" : "password"}
+                value={key}
+                onChange={(e) => { setKey(e.target.value); setError(""); }}
+                placeholder="Enter secret key…"
+                autoFocus
+                className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm pr-10 focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+              <button
+                type="button"
+                onClick={() => setShow((s) => !s)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={show ? "Hide key" : "Show key"}
+              >
+                {show ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
+            {error && (
+              <p className="mt-1.5 text-xs text-destructive font-medium">{error}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading || !key.trim()}
+            className="btn-primary w-full text-sm"
+          >
+            {loading ? <Loader2 size={15} className="animate-spin" /> : "Unlock"}
+          </button>
+        </form>
+
+        <Link
+          to="/"
+          className="mt-5 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <LayoutDashboard size={12} /> Back to site
+        </Link>
+      </motion.div>
+    </div>
+  );
+}
+
+// ── Main admin page ────────────────────────────────────────────────────────
 function AdminPage() {
+  // Check sessionStorage so a refresh re-prompts (no localStorage persistence)
+  const [unlocked, setUnlocked] = useState(
+    () => sessionStorage.getItem("admin_unlocked") === "1"
+  );
   const [active, setActive] = useState<TabId>("cakes");
+
+  if (!unlocked) {
+    return <KeyGate onUnlock={() => setUnlocked(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,6 +140,15 @@ function AdminPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                sessionStorage.removeItem("admin_unlocked");
+                setUnlocked(false);
+              }}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+            >
+              <Lock size={13} /> Lock
+            </button>
             <Link
               to="/"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"

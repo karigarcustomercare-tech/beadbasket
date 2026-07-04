@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { ShoppingBag, X, Sparkles, SlidersHorizontal } from "lucide-react";
-import { cakesApi, categoriesApi, type Cake } from "@/lib/api";
+import { ShoppingBag, X, Sparkles, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
+import { cakesApi, categoriesApi, type Cake, type CakeImage } from "@/lib/api";
 import { Reveal } from "./Reveal";
 
 const WA_NUMBER = "917000096818";
@@ -30,7 +30,144 @@ function orderOnWhatsApp(cake: Cake) {
   );
 }
 
+/** Returns the best images array from a cake */
+function getCakeImages(cake: Cake): CakeImage[] {
+  if (cake.images && cake.images.length > 0) return cake.images;
+  if (cake.image?.url) return [cake.image];
+  return [];
+}
+
 const ALL = "All";
+
+/** Small carousel used inside catalog cards */
+function CardCarousel({ images, name }: { images: CakeImage[]; name: string }) {
+  const [idx, setIdx] = useState(0);
+
+  const prev = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIdx((i) => (i - 1 + images.length) % images.length);
+  }, [images.length]);
+
+  const next = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIdx((i) => (i + 1) % images.length);
+  }, [images.length]);
+
+  if (!images.length) return null;
+
+  return (
+    <div className="relative h-full w-full group/cc">
+      <motion.img
+        key={idx}
+        src={images[idx].url}
+        alt={`${name} ${idx + 1}`}
+        loading="lazy"
+        width={600}
+        height={600}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+      />
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            aria-label="Previous image"
+            className="absolute left-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-cream/80 backdrop-blur flex items-center justify-center shadow opacity-0 group-hover/cc:opacity-100 transition-opacity z-10"
+          >
+            <ChevronLeft size={14} />
+          </button>
+          <button
+            onClick={next}
+            aria-label="Next image"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-cream/80 backdrop-blur flex items-center justify-center shadow opacity-0 group-hover/cc:opacity-100 transition-opacity z-10"
+          >
+            <ChevronRight size={14} />
+          </button>
+          {/* Dot indicators */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                aria-label={`Go to image ${i + 1}`}
+                className={`block h-1.5 rounded-full transition-all ${i === idx ? "w-4 bg-white" : "w-1.5 bg-white/60"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/** Full-size carousel used in the detail modal */
+function ModalCarousel({ images, name }: { images: CakeImage[]; name: string }) {
+  const [idx, setIdx] = useState(0);
+
+  if (!images.length) return null;
+
+  const prev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIdx((i) => (i - 1 + images.length) % images.length);
+  };
+  const next = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIdx((i) => (i + 1) % images.length);
+  };
+
+  return (
+    <div className="relative overflow-hidden h-full group/mc">
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={idx}
+          src={images[idx].url}
+          alt={`${name} ${idx + 1}`}
+          className="h-56 w-full object-cover sm:h-full"
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -30 }}
+          transition={{ duration: 0.3 }}
+        />
+      </AnimatePresence>
+      <div className="absolute inset-0 bg-gradient-to-t from-cocoa/30 to-transparent sm:bg-gradient-to-r pointer-events-none" />
+
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            aria-label="Previous image"
+            className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-cream/80 backdrop-blur flex items-center justify-center shadow opacity-0 group-hover/mc:opacity-100 transition-opacity z-10"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            onClick={next}
+            aria-label="Next image"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-cream/80 backdrop-blur flex items-center justify-center shadow opacity-0 group-hover/mc:opacity-100 transition-opacity z-10"
+          >
+            <ChevronRight size={16} />
+          </button>
+
+          {/* Thumbnail strip */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            {images.map((img, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                aria-label={`View image ${i + 1}`}
+                className={`h-8 w-8 rounded-md overflow-hidden border-2 transition-all ${i === idx ? "border-white scale-110" : "border-white/40 opacity-70"}`}
+              >
+                <img src={img.url} alt="" className="h-full w-full object-cover" />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 export function Catalog() {
   const [cat,      setCat]      = useState<string>(ALL);
@@ -87,7 +224,7 @@ export function Catalog() {
                 Each cake is baked fresh — allow 24 hours.
               </p>
             </div>
-            {/* Sort — mobile-friendly select */}
+            {/* Sort */}
             <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium shadow-soft">
               <SlidersHorizontal size={14} className="text-muted-foreground shrink-0" />
               <select
@@ -103,7 +240,7 @@ export function Catalog() {
           </div>
         </Reveal>
 
-        {/* ── Category filters — scrollable on mobile ─── */}
+        {/* ── Category filters ─── */}
         <Reveal delay={0.08}>
           <div className="mt-6 flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-none">
             {categoryList.map((c) => (
@@ -182,18 +319,8 @@ export function Catalog() {
                          grid grid-rows-[auto_1fr] sm:grid-rows-none sm:grid-cols-2
                          max-h-[90dvh] overflow-y-auto"
             >
-              {/* Image */}
-              <div className="relative overflow-hidden">
-                <motion.img
-                  src={selected.image?.url}
-                  alt={selected.name}
-                  className="h-56 w-full object-cover sm:h-full"
-                  initial={{ scale: 1.08 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.6 }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-cocoa/30 to-transparent sm:bg-gradient-to-r" />
-              </div>
+              {/* Image carousel */}
+              <ModalCarousel images={getCakeImages(selected)} name={selected.name} />
 
               {/* Content */}
               <div className="p-6 sm:p-8 flex flex-col">
@@ -267,6 +394,8 @@ function CakeCard({
 }: {
   cake: Cake; idx: number; onView: () => void; onOrder: () => void;
 }) {
+  const images = getCakeImages(c);
+
   return (
     <motion.article
       layout
@@ -277,20 +406,13 @@ function CakeCard({
       className="soft-card group overflow-hidden cursor-pointer flex flex-col"
       onClick={onView}
     >
-      {/* ── Image ───────────────────────────── */}
+      {/* ── Image carousel ───────────────────────────── */}
       <div className="relative aspect-square overflow-hidden">
-        <motion.img
-          src={c.image?.url}
-          alt={c.name}
-          loading="lazy"
-          width={600}
-          height={600}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
-        />
+        <CardCarousel images={images} name={c.name} />
 
-        {/* Featured badge — top left */}
+        {/* Featured badge */}
         {c.featured && (
-          <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-rose px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+          <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-rose px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm z-10">
             <span className="h-1 w-1 rounded-full bg-white/80" />
             Bestseller
           </span>
@@ -299,17 +421,12 @@ function CakeCard({
 
       {/* ── Info ────────────────────────────── */}
       <div className="flex flex-1 flex-col p-3 sm:p-4 gap-1.5">
-        {/* Name — centered, two-line clamp */}
         <h3 className="font-display text-center text-sm sm:text-base leading-snug line-clamp-2 text-foreground">
           {c.name}
         </h3>
-
-        {/* Price — centered */}
         <p className="text-center font-semibold text-sm sm:text-base text-foreground/80">
           ₹ {c.price.toLocaleString("en-IN")}
         </p>
-
-        {/* Order button */}
         <motion.button
           onClick={(e) => { e.stopPropagation(); onOrder(); }}
           whileTap={{ scale: 0.96 }}

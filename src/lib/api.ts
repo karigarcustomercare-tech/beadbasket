@@ -19,6 +19,7 @@ export interface Cake {
   category: string;
   description: string;
   image: CakeImage;
+  images: CakeImage[];
   flavors: string[];
   sizes: string[];
   featured: boolean;
@@ -75,6 +76,17 @@ async function apiForm<T>(
   if (!res.ok) throw new Error(json.message ?? `Request failed: ${res.status}`);
   return json as T;
 }
+
+// ── Admin ─────────────────────────────────────────────────────────────────
+
+export const adminApi = {
+  verify: (key: string) =>
+    apiFetch<{ success: boolean; message?: string }>("/api/admin/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key }),
+    }),
+};
 
 // ── Cakes ─────────────────────────────────────────────────────────────────
 
